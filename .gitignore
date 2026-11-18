@@ -1,0 +1,30 @@
+# dependencies / build output
+node_modules/
+dist/
+coverage/
+*.log
+
+# secrets and local data
+.env
+.env.*
+!.env.example
+.pgdata/
+.pgtest*/
+
+# planning docs stay local (repo is code only)
+*.md
+docs/
+design-system/
+build/
+legal/
+design/
+security/
+SLIDES.html
+.claude/
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.vercel/

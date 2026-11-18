@@ -1,0 +1,17 @@
+{
+  "name": "skillproof",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": ["server", "client"],
+  "engines": { "node": "24.x" },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "vercel-build": "npm run migrate -w server && npm run build -w client",
+    "db:start": "npm run db:start -w server",
+    "migrate": "npm run migrate -w server",
+    "create-admin": "npm run create-admin -w server",
+    "test": "npm test -w server && npm test -w client",
+    "build": "npm run build -w client"
+  }
+}
