@@ -1,10 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
   "installCommand": "npm install",
-  "buildCommand": "npm run vercel-build",
+  "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
   "functions": {
-    "api/index.js": { "maxDuration": 60 }
+    "api/index.js": { "maxDuration": 60, "includeFiles": "server/migrations/**" }
   },
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api" },

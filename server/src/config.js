@@ -20,17 +20,13 @@ const schema = z.object({
   GITHUB_TOKEN: z.string().default(''),
 });
 
-const parsed = schema.safeParse(process.env);
+// Vercel's Neon integration may expose POSTGRES_URL instead of DATABASE_URL.
+const parsed = schema.safeParse({ ...process.env, DATABASE_URL: process.env.DATABASE_URL || process.env.POSTGRES_URL });
 if (!parsed.success) {
-  console.error('Invalid environment:', parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; '));
-  process.exit(1);
+  throw new Error(`Invalid environment: ${parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`);
 }
 
 export const config = parsed.data;
-if (config.NODE_ENV === 'production' && !config.GROQ_API_KEY) {
-  console.error('GROQ_API_KEY is required in production');
-  process.exit(1);
-}
 
 // On Vercel the production and deployment URLs are allowed automatically.
 const vercelOrigins = [process.env.VERCEL_PROJECT_PRODUCTION_URL, process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]

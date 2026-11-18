@@ -95,7 +95,7 @@ const limitHandler = (req, res, next, options) =>
 const skipInTest = () => config.NODE_ENV === 'test';
 const common = { standardHeaders: 'draft-8', legacyHeaders: false, handler: limitHandler };
 
-// seniordev: in-memory stores; move to a shared store before running more than one instance.
+// Note: in-memory stores; move to a shared store before running more than one instance.
 export const ipLimit = rateLimit({ ...common, windowMs: 60_000, limit: 100, skip: skipInTest });
 export const userLimit = rateLimit({
   ...common, windowMs: 60_000, limit: 1000,

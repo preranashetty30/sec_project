@@ -111,7 +111,7 @@ r.delete('/', authLimit, requireAuth, validate({ body: z.object({ password: z.st
   if (req.user.role === 'admin') throw forbidden('Admin accounts cannot be deleted from the app');
   const { password_hash } = await one('SELECT password_hash FROM users WHERE id = $1', [req.user.id]);
   if (!(await verifyPassword(req.valid.body.password, password_hash))) throw badRequest('Password is incorrect', { password: 'Password is incorrect' });
-  // seniordev: uploaded Cloudinary files are left in place; add Admin API deletion if storage matters.
+  // Note: uploaded Cloudinary files are left in place; add Admin API deletion if storage matters.
   await query('DELETE FROM users WHERE id = $1', [req.user.id]);
   res.clearCookie(SESSION_COOKIE, { path: '/' });
   res.status(204).end();
