@@ -1,15 +1,13 @@
-// Applies migrations/*.sql in order, once each. Safe to run repeatedly and from parallel
+// Applies migrations in order, once each. Safe to run repeatedly and from parallel
 // serverless instances: everything runs in one transaction behind an advisory lock
 // (transaction-scoped, so it also works through Neon's pooled connection).
-import { readdir, readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
+import migrations from '../migrations/index.js';
 
 const LOCK_ID = 727274;
 
 export async function migrate() {
   const { pool } = await import('../src/db.js');
-  const dir = new URL('../migrations/', import.meta.url);
-  const files = (await readdir(dir)).filter((f) => f.endsWith('.sql')).sort();
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -18,14 +16,14 @@ export async function migrate() {
     const { rows } = await client.query('SELECT name FROM schema_migrations');
     const done = new Set(rows.map((r) => r.name));
     const applied = [];
-    for (const file of files.filter((f) => !done.has(f))) {
+    for (const { name, sql } of migrations.filter((m) => !done.has(m.name))) {
       try {
-        await client.query(await readFile(new URL(file, dir), 'utf8'));
+        await client.query(sql);
       } catch (e) {
-        throw new Error(`Migration ${file} failed: ${e.message}`);
+        throw new Error(`Migration ${name} failed: ${e.message}`);
       }
-      await client.query('INSERT INTO schema_migrations (name) VALUES ($1)', [file]);
-      applied.push(file);
+      await client.query('INSERT INTO schema_migrations (name) VALUES ($1)', [name]);
+      applied.push(name);
     }
     await client.query('COMMIT');
     return applied;

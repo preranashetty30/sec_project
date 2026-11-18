@@ -1,6 +1,7 @@
-// Vercel serverless entry: the whole Express API runs as one function.
-import { createApp } from '../server/src/app.js';
-import { migrate } from '../server/scripts/migrate.js';
+// Vercel entrypoint for the "server" service (Express framework preset).
+// Local development uses src/index.js instead (port listener + graceful shutdown).
+import { createApp } from './src/app.js';
+import { migrate } from './scripts/migrate.js';
 
 // Create or update tables on cold start, so deploy order never matters. Idempotent and locked.
 try {

@@ -1,3 +1,11 @@
+// Schema migrations, applied in order and recorded by name in schema_migrations.
+// Kept as JS (not .sql files read at runtime) so serverless bundlers always include them.
+// Never edit an applied migration: add a new entry instead.
+
+export default [
+  {
+    name: '001_init.sql',
+    sql: `
 -- SkillProof schema v1
 
 CREATE TABLE users (
@@ -184,3 +192,6 @@ CREATE TABLE error_events (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX error_events_created_idx ON error_events (created_at DESC);
+`,
+  },
+];
