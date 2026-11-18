@@ -8,7 +8,7 @@ const schema = z.object({
   TRUST_PROXY: z.string().default(process.env.VERCEL ? '1' : 'loopback'),
   GROQ_API_KEY: z.string().default(''),
   GROQ_BASE_URL: z.url().default('https://api.groq.com/openai/v1'),
-  GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
+  GROQ_MODEL: z.string().default('openai/gpt-oss-120b'),
   AI_DAILY_ASSESSMENTS: z.coerce.number().int().positive().default(5),
   AI_DAILY_FEEDBACK: z.coerce.number().int().positive().default(20),
   BREVO_API_KEY: z.string().default(''),

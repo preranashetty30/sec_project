@@ -79,7 +79,7 @@ export async function generateQuestions({ skill, self_level, topics, job_context
       { role: 'user', content: `<student_input>\n${input}\n</student_input>\nVariation seed: ${seed}` },
     ],
     generated,
-    { temperature: 0.8, maxTokens: 4000 },
+    { temperature: 0.8, maxTokens: 8000 },
   );
   const byType = (t) => data.questions.filter((q) => q.type === t).slice(0, WANT[t]);
   const picked = [...byType('mcq'), ...byType('short'), ...byType('code')];
@@ -129,7 +129,7 @@ export async function gradeAttempt(attempt) {
   const { data, tokens } = await askJSON(
     [{ role: 'system', content: GRADER_PROMPT }, { role: 'user', content: JSON.stringify(payload) }],
     graded,
-    { temperature: 0.1, maxTokens: 2000 },
+    { temperature: 0.1, maxTokens: 4000 },
   );
 
   for (const q of open) {

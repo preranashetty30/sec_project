@@ -91,7 +91,7 @@ r.post('/:id/analyze', student, aiLimit, validate({ params: idParam }), async (r
         role: 'user',
         content: `<project>\n${JSON.stringify({ title: p.title, description: p.description, tags: p.tags, github: p.github_meta, readme })}\n</project>`,
       },
-    ], { temperature: 0.3, maxTokens: 400 });
+    ], { temperature: 0.3, maxTokens: 1500 });
     await addTokens(req.user.id, 'feedback', tokens);
     return String(json.summary ?? '').slice(0, 1200);
   });

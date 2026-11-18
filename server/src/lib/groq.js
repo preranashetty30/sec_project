@@ -21,7 +21,12 @@ async function post(body, signal) {
       const res = await fetch(`${config.GROQ_BASE_URL}/chat/completions`, {
         method: 'POST',
         headers: { authorization: `Bearer ${config.GROQ_API_KEY}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ model: config.GROQ_MODEL, ...body }),
+        body: JSON.stringify({
+          model: config.GROQ_MODEL,
+          // gpt-oss models think before answering; low effort keeps responses fast.
+          ...(config.GROQ_MODEL.startsWith('openai/gpt-oss') && { reasoning_effort: 'low' }),
+          ...body,
+        }),
         signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
       });
       if (res.ok) {
@@ -49,7 +54,7 @@ export async function chatJSON(messages, { temperature = 0.4, maxTokens = 3000 }
 }
 
 export async function chatStream(messages, { signal, onToken }) {
-  const res = await post({ messages, temperature: 0.5, max_tokens: 1200, stream: true }, signal);
+  const res = await post({ messages, temperature: 0.5, max_tokens: 3000, stream: true }, signal);
   const decoder = new TextDecoder();
   let buffer = '';
   for await (const chunk of res.body) {
